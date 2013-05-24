@@ -43,19 +43,32 @@ class Glub < Sif::Loader
   end
 
   desc "list projects", "Lists all projects"
-  def list
-  
-    response = RestClient.get( 
-       "#{@api_endpoint}/projects?private_token=#{@api_key}"
-    ) 
+  def list(type="projects")
+
+    namefield = "path_with_namespace"
+
+    if type == "groups" then
+
+      namefield = "name"
+      response = RestClient.get( 
+         "#{@api_endpoint}/groups?private_token=#{@api_key}"
+      ) 
+
+    else
+    
+      response = RestClient.get( 
+         "#{@api_endpoint}/projects?private_token=#{@api_key}"
+      ) 
+    end
 
     response = JSON.parse response.body
 
-    projects = []
-    response.each { |project| projects << project['name'] }
-    puts "Projects: "
-    projects.each { |project| puts "  #{project}" }
-    "#{projects}"
+    entries = []
+
+    response.each { |entry| entries << "#{entry['id']} : #{entry[namefield]}" }
+    puts "#{type.capitalize}: "
+    entries.each { |entry| puts "  #{entry}" }
+    "#{entries}"
 
   end
 
