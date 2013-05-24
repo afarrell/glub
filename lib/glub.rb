@@ -56,7 +56,16 @@ class Glub < Sif::Loader
     puts "Projects: "
     projects.each { |project| puts "  #{project}" }
     "#{projects}"
-
+  end
+  
+  desc "transfer", "Transfers a project to another group"
+  def transfer(projectid, groupid)
+    puts "Transferring project #{projectid} to group #{groupid}"
+    response = RestClient.post(
+      "#{@api_endpoint}/groups/#{groupid}/projects/#{projectid}?private_token=#{@api_key}",
+      :content_type => 'application/json'
+    )
+    puts response.body 
   end
 
   no_tasks do
